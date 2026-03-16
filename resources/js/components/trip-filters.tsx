@@ -13,7 +13,7 @@ const AMOUNTS = Array.from({ length: 10 }, (_, i) => i + 1);
 const KIDS_AMOUNTS = Array.from({ length: 11 }, (_, i) => i);
 const INTERESTS = ['Beach', 'Active', 'Culture', 'Gastronomy'] as const;
 
-export function TripFilters({ configs = [] }: { configs?: TripConfig[] }) {
+export function TripFilters({ configs = [], onAnalyse }: { configs?: TripConfig[]; onAnalyse?: (configId?: number) => void }) {
     const { data, setData, post, processing } = useForm({
         duration: 1,
         period: '',
@@ -51,7 +51,9 @@ export function TripFilters({ configs = [] }: { configs?: TripConfig[] }) {
 
     function submit(e: React.FormEvent) {
         e.preventDefault();
-        post(TripConfigurationController.store().url);
+        post(TripConfigurationController.store().url, {
+            onSuccess: () => onAnalyse?.(),
+        });
     }
 
     return (
@@ -204,7 +206,7 @@ export function TripFilters({ configs = [] }: { configs?: TripConfig[] }) {
 
             {/* Submit */}
             <Button type="submit" disabled={processing} className="w-full cursor-pointer">
-                Search
+                Analyse Structure
             </Button>
 
             {configs.length > 0 && (
